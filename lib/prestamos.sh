@@ -10,7 +10,20 @@ realizar_prestamo() {
         return
     fi
 
-    read -p "ID del artículo: " id_art
+    # Mostrar tabla de artículos disponibles
+    echo "Artículos disponibles:"
+    printf "%-6s | %-25s | %s\n" "ID" "Nombre" "Cantidad"
+    printf -- "-------+---------------------------+---------\n"
+    for id in "${!ARTICULOS[@]}"; do
+        IFS=: read -r nombre cantidad <<< "${ARTICULOS[$id]}"
+        if [ "$cantidad" -gt 0 ]; then
+            printf "%-6s | %-25s | %d\n" "$id" "$nombre" "$cantidad"
+        fi
+    done
+    echo ""
+
+    read -p "ID del artículo a prestar: " id_art
+
     if [ -z "${ARTICULOS[$id_art]}" ]; then
         echo "Error: artículo no registrado."
         pause "Presione Enter para continuar..."
@@ -27,14 +40,14 @@ realizar_prestamo() {
 
     # Registrar préstamo
     echo "$codigo_est:$id_art" >> "$PRESTAMOS_FILE"
-    # Actualizar inventario
     cantidad=$((cantidad - 1))
     ARTICULOS["$id_art"]="$nombre_art:$cantidad"
     guardar_articulos
 
-    echo "Préstamo registrado: $nombre_art para $codigo_est"
+    echo "Préstamo registrado: $nombre_art para estudiante $codigo_est."
     pause "Presione Enter para continuar..."
 }
+
 
 # Devolver artículo
 devolver_articulo() {
@@ -138,29 +151,14 @@ mostrar_prestamos() {
         return
     fi
 
-    echo ""
-    declare -A prestamos_por_estudiante
+    printf "%-10s | %-20s | %-25s | %-6s | %-25s\n" "Código" "Nombre" "Carrera" "ID" "Artículo"
+    printf "%-10s-+-%-20s-+-%-25s-+-%-6s-+-%-25s\n" "----------" "--------------------" "-------------------------" "------" "-------------------------"
 
-    # Agrupar préstamos por código de estudiante
     while IFS=: read -r codigo_est id_art; do
-        prestamos_por_estudiante["$codigo_est"]+="$id_art "
-    done < "$PRESTAMOS_FILE"
-
-    for codigo_est in "${!prestamos_por_estudiante[@]}"; do
         IFS=: read -r nombre carrera <<< "${ESTUDIANTES[$codigo_est]}"
-        echo "Estudiante: $nombre ($codigo_est)"
-        echo "  Carrera: $carrera"
-        echo "  Artículos prestados:"
-        for id_art in ${prestamos_por_estudiante[$codigo_est]}; do
-            if [ -n "${ARTICULOS[$id_art]}" ]; then
-                IFS=: read -r nombre_art cantidad <<< "${ARTICULOS[$id_art]}"
-                echo "    - $nombre_art (ID: $id_art)"
-            else
-                echo "    - [Artículo eliminado] (ID: $id_art)"
-            fi
-        done
-        echo ""
-    done
+        IFS=: read -r nombre_art _ <<< "${ARTICULOS[$id_art]}"
+        printf "%-10s | %-20s | %-25s | %-6s | %-25s\n" "$codigo_est" "$nombre" "$carrera" "$id_art" "$nombre_art"
+    done < "$PRESTAMOS_FILE"
 
     pause "Presione Enter para continuar..."
 }
