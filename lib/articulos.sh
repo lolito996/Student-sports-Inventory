@@ -19,22 +19,38 @@ guardar_articulos() {
 
 registrar_articulo() {
     echo "=== REGISTRAR NUEVO ARTÍCULO DEPORTIVO ==="
-    read -p "ID del artículo: " id
 
-    if [ -n "${ARTICULOS[$id]}" ]; then
-        echo "Error: ya existe un artículo con ese ID."
-        pause "Presione Enter para continuar..."
-        return
-    fi
+    while true; do
+        read -p "ID del artículo (3 dígitos): " id
+        if [[ "$id" =~ ^[0-9]{3}$ ]]; then
+            if [ -n "${ARTICULOS[$id]}" ]; then
+                echo "Error: ya existe un artículo con ese ID."
+            else
+                break
+            fi
+        else
+            echo "Error: el ID debe tener exactamente 3 dígitos numéricos (por ejemplo: 001, 123)."
+        fi
+    done
 
     read -p "Nombre del artículo: " nombre
-    read -p "Cantidad disponible: " cantidad
+
+    while true; do
+        read -p "Cantidad disponible: " cantidad
+        if [[ "$cantidad" =~ ^[0-9]+$ ]]; then
+            break
+        else
+            echo "Error: la cantidad debe ser un número entero positivo."
+        fi
+    done
 
     ARTICULOS["$id"]="$nombre:$cantidad"
     echo "$id:$nombre:$cantidad" >> "$ARTICULOS_FILE"
+
     echo "Artículo registrado con éxito."
     pause "Presione Enter para continuar..."
 }
+
 
 mostrar_articulos() {
     echo "=== LISTA DE ARTÍCULOS DISPONIBLES ==="
