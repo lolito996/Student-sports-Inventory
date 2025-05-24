@@ -1,0 +1,6 @@
+1001:Juan Pérez:Ingeniería Informática
+1002:María García:Medicina
+1003:Carlos López:Arquitectura
+1004:Ana Martínez:Derecho
+1005:Luis Rodríguez:Administración de Empresas
+
