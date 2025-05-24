@@ -22,7 +22,8 @@ mostrar_menu() {
     echo "5. Devolver artículo"
     echo "6. Mostrar todos los estudiantes"
     echo "7. Mostrar todos los artículos"
-    echo "8. Salir"
+    echo "8. Mostrar todos los préstamos"
+    echo "9. Salir"
     echo "===================================="
     echo -n "Seleccione una opción: "
 }
@@ -40,7 +41,8 @@ while true; do
         5) devolver_articulo ;;
         6) mostrar_estudiantes ;;
         7) mostrar_articulos ;;
-        8) echo "Saliendo del sistema..."; exit 0 ;;
+        8) mostrar_prestamos ;;
+        9) echo "Saliendo del sistema..."; exit 0 ;;
         *) echo "Opción no válida. Intente nuevamente." ;;
     esac
 done
