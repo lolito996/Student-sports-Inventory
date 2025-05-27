@@ -40,7 +40,6 @@ show_estudiante_header() {
 registrar_estudiante() {
     echo "=== REGISTRAR NUEVO ESTUDIANTE ==="
     
-    # Validar código (solo números)
     while true; do
         read -p "Código del estudiante (4 dígitos): " codigo
         if [[ "$codigo" =~ ^[0-9]{4}$ ]]; then
@@ -53,50 +52,17 @@ registrar_estudiante() {
             echo "Error: El código debe tener 4 dígitos numéricos."
         fi
     done
-    
-    read -p "Nombre del estudiante: " nombre
-    read -p "Carrera del estudiante: " carrera
-    
-    # Guardar en memoria
-    ESTUDIANTES["$codigo"]="$nombre:$carrera"
-    
-    # Guardar en archivo
-    echo "$codigo:$nombre:$carrera" >> "$ESTUDIANTES_FILE"
-    
-    echo "Estudiante registrado con éxito."
-    pause "Presione Enter para continuar..."
-}
 
-registrar_estudiante() {
-    echo "=== REGISTRAR NUEVO ESTUDIANTE ==="
-    
-    # Validar código (solo números)
-    while true; do
-        read -p "Código del estudiante (4 dígitos): " codigo
-        if [[ "$codigo" =~ ^[0-9]{4}$ ]]; then
-            if [ -n "${ESTUDIANTES[$codigo]}" ]; then
-                echo "Error: Ya existe un estudiante con ese código."
-            else
-                break
-            fi
-        else
-            echo "Error: El código debe tener 4 dígitos numéricos."
-        fi
-    done
-    
     read -p "Nombre del estudiante: " nombre
     read -p "Carrera del estudiante: " carrera
-    
-    # Guardar en memoria
+
     ESTUDIANTES["$codigo"]="$nombre:$carrera"
-    
-    # Guardar en archivo con salto de línea
+
     if [ -s "$ESTUDIANTES_FILE" ]; then
-        # Si el archivo no está vacío, añadir un salto de línea primero
         echo "" >> "$ESTUDIANTES_FILE"
     fi
     echo "$codigo:$nombre:$carrera" >> "$ESTUDIANTES_FILE"
-    
+
     echo "Estudiante registrado con éxito."
     pause "Presione Enter para continuar..."
 }
@@ -107,15 +73,17 @@ mostrar_estudiantes() {
     if [ ${#ESTUDIANTES[@]} -eq 0 ]; then
         echo "No hay estudiantes registrados."
     else
-        show_estudiante_header
+        printf "%-10s| %-20s| %s\n" "Código" "Nombre" "Carrera"
+        printf -- "----------+----------------------+-------------------------------\n"
         for codigo in "${!ESTUDIANTES[@]}"; do
-            IFS=: read -r nombre carrera <<< "${ESTUDIANTES[$codigo]}"
-            format_estudiante "$codigo" "$nombre" "$carrera"
-        done | sort -n  # Ordenar por código numérico
+            IFS=':' read -r nombre carrera <<< "${ESTUDIANTES[$codigo]}"
+            printf "%-10s| %-20s| %s\n" "$codigo" "$nombre" "$carrera"
+        done | sort
     fi
-    
+
     pause "Presione Enter para continuar..."
 }
+
 
 buscar_estudiante() {
     local codigo="$1"

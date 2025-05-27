@@ -10,6 +10,22 @@ realizar_prestamo() {
         return
     fi
 
+    hay_disponibles=false
+    for id in "${!ARTICULOS[@]}"; do
+        IFS=: read -r nombre cantidad <<< "${ARTICULOS[$id]}"
+        if [ "$cantidad" -gt 0 ]; then
+            hay_disponibles=true
+            break
+        fi
+    done
+
+    if ! $hay_disponibles; then
+        echo "No hay artículos disponibles para préstamo."
+        pause "Presione Enter para continuar..."
+        return
+    fi
+
+
     # Mostrar tabla de artículos disponibles
     echo "Artículos disponibles:"
     printf "%-6s | %-25s | %s\n" "ID" "Nombre" "Cantidad"
@@ -26,6 +42,12 @@ realizar_prestamo() {
 
     if [ -z "${ARTICULOS[$id_art]}" ]; then
         echo "Error: artículo no registrado."
+        pause "Presione Enter para continuar..."
+        return
+    fi
+    
+    if grep -q "^$codigo_est:$id_art$" "$PRESTAMOS_FILE"; then
+        echo "Error: el estudiante ya tiene este artículo prestado."
         pause "Presione Enter para continuar..."
         return
     fi
