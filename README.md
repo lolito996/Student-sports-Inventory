@@ -4,6 +4,11 @@
 
 Este proyecto es un sistema de gestión desarrollado en Bash que permite administrar estudiantes, artículos deportivos y préstamos de estos artículos a los estudiantes. El sistema ofrece un menú interactivo para realizar todas las operaciones para cada entidad, además de gestionar los préstamos con sus respectivas validaciones.
 
+
+## Nota
+
+El proyecto tiene una informacion por defecto que se encuentra en la carpeta /data
+
 ## 🛠️ Funcionalidades principales
 
 - **Gestión de Estudiantes**:
@@ -23,7 +28,6 @@ Este proyecto es un sistema de gestión desarrollado en Bash que permite adminis
 gestion_prestamos/
 ├── main.sh                 # Script principal
 ├── README.md               # Documentación del proyecto
-├── helpers.sh              # Funciones auxiliares comunes
 ├── data/                   # Directorio de almacenamiento
 │   ├── estudiantes.txt     # Datos de estudiantes
 │   ├── articulos.txt       # Datos de artículos
@@ -48,9 +52,6 @@ gestion_prestamos/
 2. Navegar al directorio del proyecto:
    ```bash
    cd Students-sports-Inventory/
-   ```
-   ```bash
-   cd lib/
    ```
 3. Dar permisos de ejecución:
    ```bash
